@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { X509ENROLLMENT_CX509ENROLLMENT } from "../constants";
-import { CryptoproParamsSuccess, CryptoproParamsFailure } from "../types";
+import type { CryptoproParamsFailure, CryptoproParamsSuccess } from "../types";
 
 type TParams = {
   cadesplugin: any;
@@ -17,9 +17,8 @@ export default function createCertificateApplication({
   setCryptoParams,
   onError,
 }: TParams): void {
-  cadesplugin?.async_spawn(function* createCert(): Generator<any, void, any> {
-    let cryptoproParams: CryptoproParamsSuccess | CryptoproParamsFailure =
-      {} as any;
+  cadesplugin.async_spawn(function* createCert() {
+    let cryptoproParams = {};
 
     try {
       const XCN_AT_KEYEXCHANGE = 1;
@@ -51,14 +50,9 @@ export default function createCertificateApplication({
         "X509Enrollment.CX509ExtensionKeyUsage"
       );
 
-      const STREET_EXTENSION = 0x10;
-
       const CERT_DATA_ENCIPHERMENT_KEY_USAGE = 0x10;
       const CERT_KEY_ENCIPHERMENT_KEY_USAGE = 0x20;
       const CERT_DIGITAL_SIGNATURE_KEY_USAGE = 0x80;
-      // Константа для использования сертификата в целях неотказуемости (подтверждения авторства)
-      // Значение 0x40 (64 в десятичной системе) указывает на возможность использования
-      // сертификата для создания электронных подписей, которые нельзя впоследствии отрицать
       const CERT_NON_REPUDIATION_KEY_USAGE = 0x40;
 
       yield KeyUsageExtension.InitializeEncode(
@@ -66,10 +60,8 @@ export default function createCertificateApplication({
         CERT_KEY_ENCIPHERMENT_KEY_USAGE |
           CERT_DATA_ENCIPHERMENT_KEY_USAGE |
           CERT_DIGITAL_SIGNATURE_KEY_USAGE |
-          CERT_NON_REPUDIATION_KEY_USAGE |
-          STREET_EXTENSION
+          CERT_NON_REPUDIATION_KEY_USAGE
       );
-
       const extensions = yield CertificateRequestPkcs10.X509Extensions;
 
       yield extensions.Add(KeyUsageExtension);
@@ -96,21 +88,15 @@ export default function createCertificateApplication({
         status: "success",
         reason: "CRYPTO_PLUGIN_SUCCESS",
       };
-      yield setCryptoParams(cryptoproParams);
+      yield setCryptoParams(cryptoproParams as CryptoproParamsSuccess);
     } catch (error) {
       cryptoproParams = {
         status: "failure",
         reason: "CRYPTO_PLUGIN_FAILURE",
       };
       console.log("error", error);
-      yield setCryptoParams(cryptoproParams);
-      if (error instanceof Error) {
-        yield onError?.(error.message);
-      } else if (typeof error === "string") {
-        yield onError?.(error);
-      } else {
-        yield onError?.("Неизвестная ошибка");
-      }
+      yield setCryptoParams(cryptoproParams as CryptoproParamsFailure);
+      yield onError?.(error as string);
     }
   });
 }

@@ -13,6 +13,7 @@ export interface Data {
   surname: string;
   organization: string;
   description: string;
+  template: string;
 }
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
     surname: "",
     organization: "",
     description: "",
+    template: "",
   });
 
   useEffect(() => {
@@ -75,6 +77,14 @@ function App() {
           />
         </div>
         <div className="form-group">
+          <label>OID шаблона УЦ</label>
+          <input
+            type="text"
+            value={formData.template}
+            onChange={(e) => handleChange("template", e.target.value)}
+          />
+        </div>
+        <div className="form-group">
           <label>Фамилия</label>
           <input
             type="text"
@@ -99,6 +109,8 @@ function App() {
         </div>
       </div>
       <button onClick={handleSubmit}>Создать сертификат</button>
+      <span>{cryptoParams?.status === "success" && cryptoParams.data}</span>
+      <span>{cryptoParams?.status === "failure" && cryptoParams.reason}</span>
     </>
   );
 }
