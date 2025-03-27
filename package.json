@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://T-pavel.github.io/crt-generate",
+  "homepage": "https://t-pavel.github.io/crt-generate",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
