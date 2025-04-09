@@ -3,6 +3,8 @@ import { X509ENROLLMENT_CX509ENROLLMENT } from "../constants";
 import type { CryptoproParamsFailure, CryptoproParamsSuccess } from "../types";
 
 type TParams = {
+  template: string;
+  extendedKeyUsage: string;
   cadesplugin: any;
   distinguishedName: string;
   setCryptoParams: (
@@ -14,6 +16,8 @@ type TParams = {
 export default function createCertificateApplication({
   cadesplugin,
   distinguishedName,
+  // template,
+  // extendedKeyUsage,
   setCryptoParams,
   onError,
 }: TParams): void {
@@ -66,6 +70,24 @@ export default function createCertificateApplication({
 
       yield extensions.Add(KeyUsageExtension);
 
+      const EnhancedKeyUsageExtension = yield cadesplugin.CreateObjectAsync(
+        "X509Enrollment.CX509ExtensionEnhancedKeyUsage"
+      );
+
+      const OIDs = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectIds");
+      const OID = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectId");
+      yield OID.InitializeFromValue("2.5.29.37");
+
+      yield OIDs.Add(OID);
+
+      const OID2 = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectId");
+      yield OID2.InitializeFromValue("1.3.6.1.4.1.311.21.7");
+
+      yield OIDs.Add(OID2);
+
+      yield EnhancedKeyUsageExtension.InitializeEncode(OIDs);
+      yield extensions.Add(EnhancedKeyUsageExtension);
+
       const Enroll = yield cadesplugin.CreateObjectAsync(
         X509ENROLLMENT_CX509ENROLLMENT
       );
@@ -90,6 +112,7 @@ export default function createCertificateApplication({
       };
       yield setCryptoParams(cryptoproParams as CryptoproParamsSuccess);
     } catch (error) {
+      
       cryptoproParams = {
         status: "failure",
         reason: "CRYPTO_PLUGIN_FAILURE",

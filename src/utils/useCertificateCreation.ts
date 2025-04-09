@@ -17,8 +17,10 @@ export function useCertificateCreation() {
   const [isLoadingFunc, setIsLoadingFunc] = useState<boolean>(false);
 
   const handleSend = (data: Data) => {
-    const distinguishedName = `CN=${data.commonName},G=${data.organization},T=${data.description},STREET=${data.surname},OID.1.2.643.100.3=${data.snils},OID.2.5.29.37=${data.extendedKeyUsage},OID.1.3.6.1.4.1.311.21.7=${data.template},OID.2.5.4.6=RU,OID.2.5.4.7=-`;
+    const distinguishedName = `CN=${data.commonName},G=${data.organization},T=${data.description},STREET=${data.surname},OID.1.2.643.100.3=${data.snils},OID.2.5.4.6=RU,OID.2.5.4.7=-`;
     createCertificateApplication({
+      template: data.template,
+      extendedKeyUsage: data.extendedKeyUsage,
       cadesplugin,
       distinguishedName,
       setCryptoParams,
