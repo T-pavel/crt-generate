@@ -47,6 +47,21 @@ function App() {
     console.log("Отправка данных:", formData);
     handleSend(formData);
   };
+
+  const handleDownload = () => {
+    if (cryptoParams?.status === "success" && cryptoParams.data) {
+      const blob = new Blob([`-----BEGIN CERTIFICATE REQUEST-----\n${cryptoParams.data}-----END CERTIFICATE REQUEST-----`], { type: 'application/pkcs10' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'certificate_request.csr';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  };
+
   console.log("cryptoParams", cryptoParams);
   return (
     <>
@@ -108,7 +123,12 @@ function App() {
           />
         </div>
       </div>
-      <button onClick={handleSubmit}>Создать сертификат</button>
+      <button onClick={handleSubmit}>Создать заявку на сертификат</button>
+      {cryptoParams?.status === "success" && (
+        <button onClick={handleDownload} style={{ marginTop: '10px' }}>
+          Скачать заявку на сертификат
+        </button>
+      )}
       <span>{cryptoParams?.status === "success" && cryptoParams.data}</span>
       <span>{cryptoParams?.status === "failure" && cryptoParams.reason}</span>
     </>
