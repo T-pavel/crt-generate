@@ -13,7 +13,8 @@ export interface Data {
   surname: string;
   organization: string;
   description: string;
-  template: string;
+  template: string; 
+  st: string;
 }
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
     organization: "",
     description: "",
     template: "",
+    st: "",
   });
 
   useEffect(() => {
@@ -62,7 +64,6 @@ function App() {
     }
   };
 
-  console.log("cryptoParams", cryptoParams);
   return (
     <>
       <div className="certificate-form">
@@ -105,6 +106,14 @@ function App() {
             type="text"
             value={formData.surname}
             onChange={(e) => handleChange("surname", e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>Регион</label>
+          <input
+            type="text"
+            value={formData.st}
+            onChange={(e) => handleChange("st", e.target.value)}
           />
         </div>
         <div className="form-group">

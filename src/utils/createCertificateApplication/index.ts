@@ -16,8 +16,8 @@ type TParams = {
 export default function createCertificateApplication({
   cadesplugin,
   distinguishedName,
-  // template,
-  // extendedKeyUsage,
+  template,
+  extendedKeyUsage,
   setCryptoParams,
   onError,
 }: TParams): void {
@@ -66,31 +66,43 @@ export default function createCertificateApplication({
           CERT_DIGITAL_SIGNATURE_KEY_USAGE |
           CERT_NON_REPUDIATION_KEY_USAGE
       );
-      const extensions = yield CertificateRequestPkcs10.X509Extensions;
 
-      yield extensions.Add(KeyUsageExtension);
-
-      const EnhancedKeyUsageExtension = yield cadesplugin.CreateObjectAsync(
+      // Создаем расширение Extended Key Usage
+      const ExtendedKeyUsageExtension = yield cadesplugin.CreateObjectAsync(
         "X509Enrollment.CX509ExtensionEnhancedKeyUsage"
       );
-
+      
       const OIDs = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectIds");
       const OID = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectId");
-      yield OID.InitializeFromValue("2.5.29.37");
-
+      
+      // Инициализируем OID для Extended Key Usage
+      yield OID.InitializeFromValue(extendedKeyUsage);
       yield OIDs.Add(OID);
+      
+      yield ExtendedKeyUsageExtension.InitializeEncode(OIDs);
 
-      const OID2 = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectId");
-      yield OID2.InitializeFromValue("1.3.6.1.4.1.311.21.7");
+      const extensions = yield CertificateRequestPkcs10.X509Extensions;
 
-      yield OIDs.Add(OID2);
-
-      yield EnhancedKeyUsageExtension.InitializeEncode(OIDs);
-      yield extensions.Add(EnhancedKeyUsageExtension);
+      const TemplateExtension = yield cadesplugin.CreateObjectAsync(
+        "X509Enrollment.CX509ExtensionTemplate"
+      );
+      const OIDTemplate = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectId");
+      yield OIDTemplate.InitializeFromValue(template);
+      
+      yield TemplateExtension.InitializeEncode(
+        OIDTemplate,  // OID шаблона
+        1,    // Основная версия
+        0     // Дополнительная версия
+      );
+      
+      yield extensions.Add(TemplateExtension);
+      yield extensions.Add(KeyUsageExtension);
+      yield extensions.Add(ExtendedKeyUsageExtension);
 
       const Enroll = yield cadesplugin.CreateObjectAsync(
         X509ENROLLMENT_CX509ENROLLMENT
       );
+
 
       yield Enroll.InitializeFromRequest(CertificateRequestPkcs10);
 
