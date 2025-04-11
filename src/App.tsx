@@ -51,10 +51,10 @@ const surnameHints: Record<SkpType | "", string> = {
 const commonNameHints: Record<SkpType | "", string> = {
   [SkpType.KO]: "PROCESSING<NNN>, где NNN - условный номер ключа, начиная с 001",
   [SkpType.KK]: "CONTROL<NNN>, где NNN - условный номер ключа, начиная с 001",
-  [SkpType.CLIENT_FL]: "ID ФП - соответствующий идентификатор ФП, Участника ПлЦР",
-  [SkpType.CLIENT_UL]: "ID ФП - соответствующий идентификатор ФП, Участника ПлЦР",
-  [SkpType.CLIENT_UL_DIRECT]: "ID ФП - соответствующий идентификатор ФП, Участника ПлЦР",
-  [SkpType.TLS]: "ID ФП - соответствующий идентификатор ФП, Участника ПлЦР",
+  [SkpType.CLIENT_FL]: "Доступно только для КК и КО",
+  [SkpType.CLIENT_UL]: "Доступно только для КК и КО",
+  [SkpType.CLIENT_UL_DIRECT]: "Доступно только для КК и КО",
+  [SkpType.TLS]: "Доступно только для КК и КО",
   "": "Выберите тип СКП",
 };
 
@@ -62,10 +62,10 @@ const commonNameHints: Record<SkpType | "", string> = {
 const organizationHints: Record<SkpType | "", string> = {
   [SkpType.KO]: "КО ФП <XXX>, где XXX - название кредитной организации",
   [SkpType.KK]: "КК ФП <XXX>, где XXX - название кредитной организации",
-  [SkpType.CLIENT_FL]: "Пользователь ПлЦР, обслуживающийся у ФП <ID ФП>, где ID ФП - соответствующий идентификатор ФП",
-  [SkpType.CLIENT_UL]: "Пользователь ПлЦР, обслуживающийся у ФП <ID ФП>, где ID ФП - соответствующий идентификатор ФП",
-  [SkpType.CLIENT_UL_DIRECT]: "Пользователь ПлЦР, обслуживающийся у ФП <ID ФП>, где ID ФП - соответствующий идентификатор ФП",
-  [SkpType.TLS]: "Не заполняется",
+  [SkpType.CLIENT_FL]: "Доступно только для КК и КО",
+  [SkpType.CLIENT_UL]: "Доступно только для КК и КО",
+  [SkpType.CLIENT_UL_DIRECT]: "Доступно только для КК и КО",
+  [SkpType.TLS]: "Доступно только для КК и КО",
   "": "Выберите тип СКП",
 };
 
@@ -182,13 +182,16 @@ function App() {
           </div>
 
           <div className="form-group required">
-            <div className="field-hint">{commonNameHints[formData.skpType]}</div>
+            <div className={`field-hint ${![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType) ? 'disabled-hint' : ''}`}>
+              {commonNameHints[formData.skpType]}
+            </div>
             <div className="input-section">
               <label>Имя (CN)</label>
               <input
                 type="text"
                 value={formData.commonName}
                 onChange={(e) => handleChange("commonName", e.target.value)}
+                disabled={!formData.skpType || ![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType)}
               />
             </div>
           </div>
@@ -254,13 +257,16 @@ function App() {
           </div>
 
           <div className="form-group">
-            <div className="field-hint">{organizationHints[formData.skpType]}</div>
+            <div className={`field-hint ${![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType) ? 'disabled-hint' : ''}`}>
+              {organizationHints[formData.skpType]}
+            </div>
             <div className="input-section">
               <label>Организация</label>
               <input
                 type="text"
                 value={formData.organization}
                 onChange={(e) => handleChange("organization", e.target.value)}
+                disabled={!formData.skpType || ![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType)}
               />
             </div>
           </div>

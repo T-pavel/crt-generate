@@ -183,6 +183,19 @@ button.primary:hover {
   margin-left: 4px;
 }
 
+/* Стили для отключенных полей */
+.form-group input:disabled,
+.form-group textarea:disabled,
+.form-group select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Стили для подсказок отключенных полей */
+.disabled-hint {
+  color: #999;
+}
+
 /* Адаптивность для мобильных устройств */
 @media (max-width: 1200px) {
   .form-group {
