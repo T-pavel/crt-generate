@@ -17,7 +17,22 @@ export function useCertificateCreation() {
   const [isLoadingFunc, setIsLoadingFunc] = useState<boolean>(false);
 
   const handleSend = (data: Data) => {
-    const distinguishedName = `CN=${data.commonName},G=${data.organization},T=${data.description},STREET=${data.surname},OID.1.2.643.100.3=${data.snils},OID.2.5.4.6=RU,OID.2.5.4.8=${data.st}`;
+    const dnFields = [
+      { key: 'CN', value: data.commonName },
+      { key: 'G', value: data.organization },
+      { key: 'T', value: data.description },
+      { key: 'STREET', value: data.surname },
+      { key: 'OID.1.2.643.100.3', value: data.snils },
+      { key: 'OID.2.5.4.6', value: 'RU' },
+      { key: 'OID.2.5.4.8', value: data.st },
+      { key: 'O', value: data.o },
+    ];
+
+    const distinguishedName = dnFields
+      .filter(field => field.value.trim() !== '')
+      .map(field => `${field.key}=${field.value}`)
+      .join(',');
+
     createCertificateApplication({
       template: data.template,
       extendedKeyUsage: data.extendedKeyUsage,

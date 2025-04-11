@@ -42,54 +42,162 @@
 }
 
 .certificate-form {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .certificate-form h2 {
-  text-align: center;
-  margin-bottom: 20px;
+  text-align: left;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-size: 24px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
 }
 
+/* Контейнер для всех полей формы */
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Группа полей */
 .form-group {
-  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: 300px 500px;
+  gap: 20px;
+  align-items: start;
 }
 
+/* Метка и поле ввода */
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Метка поля */
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 14px;
 }
 
+/* Поля ввода */
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
-  padding: 8px;
+  padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  box-sizing: border-box;
+  font-size: 14px;
+  transition: all 0.2s;
+  background-color: #fff;
+  color: #333;
 }
 
+/* Подсказки */
+.field-hint {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+  line-height: 1.4;
+  padding-top: 29px;
+  text-align: left;
+}
+
+/* Стили для textarea */
 .form-group textarea {
-  height: 100px;
+  min-height: 80px;
   resize: vertical;
+  color: #333;
 }
 
+/* Стили для select */
+.form-group select {
+  color: #333;
+}
+
+/* Стили для фокуса */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3a7bc8;
+  box-shadow: 0 0 0 2px rgba(58, 123, 200, 0.1);
+}
+
+/* Контейнер для кнопок */
+.form-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  border-top: 2px solid #eee;
+  padding-top: 20px;
+}
+
+/* Стили для кнопок */
 button {
-  display: block;
-  margin: 20px auto;
   padding: 10px 20px;
-  background-color: #4a90e2;
-  color: white;
   border: none;
   border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 16px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-button:hover {
+button.primary {
   background-color: #3a7bc8;
+  color: white;
+}
+
+button.primary:hover {
+  background-color: #2d62a0;
+}
+
+.download-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.download-button:hover {
+  background-color: #218838;
+}
+
+/* Стили для обязательных полей */
+.required label::after {
+  content: "*";
+  color: #dc3545;
+  margin-left: 4px;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 1200px) {
+  .form-group {
+    grid-template-columns: 250px 1fr;
+  }
+}
+
+@media (max-width: 992px) {
+  .form-group {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .field-hint {
+    padding-top: 0;
+    margin-bottom: 8px;
+  }
 }
