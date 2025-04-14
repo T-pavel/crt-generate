@@ -31,9 +31,11 @@ const fieldHints = {
   extendedKeyUsage: "OID расширенного использования ключа",
   description: "Только для КО/КК: Серия ‹серия ключа›",
   template: "Указывается OID шаблона УЦ для данного СКП",
-  st: "Код региона из справочника БИК",
+  st: "Код региона из справочника БИК (только для КО/КК)",
   o: "Идентификатор Субъекта ПлЦР",
   skpType: "Тип СКП",
+  ou: "Идентификатор кошелька на ПлЦР (Не заполняется для TLS)",
+  organization: "Наименование организации",
 };
 
 // Подсказки для поля surname в зависимости от типа СКП
@@ -62,10 +64,10 @@ const commonNameHints: Record<SkpType | "", string> = {
 const organizationHints: Record<SkpType | "", string> = {
   [SkpType.KO]: "КО ФП <XXX>, где XXX - название кредитной организации",
   [SkpType.KK]: "КК ФП <XXX>, где XXX - название кредитной организации",
-  [SkpType.CLIENT_FL]: "Доступно только для КК и КО",
-  [SkpType.CLIENT_UL]: "Доступно только для КК и КО",
-  [SkpType.CLIENT_UL_DIRECT]: "Доступно только для КК и КО",
-  [SkpType.TLS]: "Доступно только для КК и КО",
+  [SkpType.CLIENT_FL]: "Пользователь ПлЦР, обслуживающийся у ФП <ID ФП>",
+  [SkpType.CLIENT_UL]: "Пользователь ПлЦР, обслуживающийся у ФП <ID ФП>",
+  [SkpType.CLIENT_UL_DIRECT]: "Пользователь ПлЦР, обслуживающийся у ФП <ID ФП>",
+  [SkpType.TLS]: "Не заполняется",
   "": "Выберите тип СКП",
 };
 
@@ -91,6 +93,7 @@ export interface Data {
   st: string;
   skpType: SkpType | "";
   o: string;
+  ou: string;
 }
 
 function App() {
@@ -107,6 +110,7 @@ function App() {
     st: "",
     skpType: SkpType.CLIENT_FL,
     o: "",
+    ou: "",
   });
 
   useEffect(() => {
@@ -120,11 +124,16 @@ function App() {
         setFormData((prev) => ({
           ...prev,
           extendedKeyUsage: `1.3.6.1.5.5.7.3.2`,
+          organization: "",
         }));
       } else {
         setFormData((prev) => ({
           ...prev,
           extendedKeyUsage: `1.3.6.1.4.1.10244.7.50${signExtendedKeyUsage[value]}`,
+          organization: value === SkpType.KO ? "КО ФП " : 
+                      value === SkpType.KK ? "КК ФП " : 
+                      [SkpType.CLIENT_FL, SkpType.CLIENT_UL, SkpType.CLIENT_UL_DIRECT].includes(value as SkpType) ? 
+                      "Пользователь ПлЦР, обслуживающийся у ФП " : "",
         }));
       }
     }
@@ -183,6 +192,33 @@ function App() {
 
           <div className="form-group required">
             <div className={`field-hint ${![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType) ? 'disabled-hint' : ''}`}>
+              {fieldHints.st}
+            </div>
+            <div className="input-section">
+              <label>Регион (ST)</label>
+              <input
+                type="text"
+                value={formData.st}
+                onChange={(e) => handleChange("st", e.target.value)}
+                disabled={!formData.skpType || ![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType)}
+              />
+            </div>
+          </div>
+
+          <div className="form-group required">
+            <div className="field-hint">{fieldHints.o}</div>
+            <div className="input-section">
+              <label>Организация (O)</label>
+              <input
+                type="text"
+                value={formData.o}
+                onChange={(e) => handleChange("o", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-group required">
+            <div className={`field-hint ${![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType) ? 'disabled-hint' : ''}`}>
               {commonNameHints[formData.skpType]}
             </div>
             <div className="input-section">
@@ -197,6 +233,21 @@ function App() {
           </div>
 
           <div className="form-group">
+            <div className={`field-hint ${formData.skpType === SkpType.TLS ? 'disabled-hint' : ''}`}>
+              {fieldHints.ou}
+            </div>
+            <div className="input-section">
+              <label>Подразделение (OU)</label>
+              <input
+                type="text"
+                value={formData.ou}
+                onChange={(e) => handleChange("ou", e.target.value)}
+                disabled={formData.skpType === SkpType.TLS}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
             <div className="field-hint">{fieldHints.snils}</div>
             <div className="input-section">
               <label>СНИЛС (SNILS)</label>
@@ -204,6 +255,47 @@ function App() {
                 type="text"
                 value={formData.snils}
                 onChange={(e) => handleChange("snils", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="field-hint">{surnameHints[formData.skpType]}</div>
+            <div className="input-section">
+              <label>Фамилия</label>
+              <input
+                type="text"
+                value={formData.surname}
+                onChange={(e) => handleChange("surname", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className={`field-hint ${formData.skpType === SkpType.TLS ? 'disabled-hint' : ''}`}>
+              {organizationHints[formData.skpType]}
+            </div>
+            <div className="input-section">
+              <label>Организация</label>
+              <input
+                type="text"
+                value={formData.organization}
+                onChange={(e) => handleChange("organization", e.target.value)}
+                disabled={formData.skpType === SkpType.TLS}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className={`field-hint ${![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType) ? 'disabled-hint' : ''}`}>
+              {fieldHints.description}
+            </div>
+            <div className="input-section">
+              <label>Описание(T)</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => handleChange("description", e.target.value)}
+                disabled={!formData.skpType || ![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType)}
               />
             </div>
           </div>
@@ -228,68 +320,6 @@ function App() {
                 type="text"
                 value={formData.template}
                 onChange={(e) => handleChange("template", e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <div className="field-hint">{surnameHints[formData.skpType]}</div>
-            <div className="input-section">
-              <label>Фамилия</label>
-              <input
-                type="text"
-                value={formData.surname}
-                onChange={(e) => handleChange("surname", e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <div className="field-hint">{fieldHints.st}</div>
-            <div className="input-section">
-              <label>Регион</label>
-              <input
-                type="text"
-                value={formData.st}
-                onChange={(e) => handleChange("st", e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <div className={`field-hint ${![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType) ? 'disabled-hint' : ''}`}>
-              {organizationHints[formData.skpType]}
-            </div>
-            <div className="input-section">
-              <label>Организация</label>
-              <input
-                type="text"
-                value={formData.organization}
-                onChange={(e) => handleChange("organization", e.target.value)}
-                disabled={!formData.skpType || ![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType)}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <div className="field-hint">{fieldHints.o}</div>
-            <div className="input-section">
-              <label>Организация(O)</label>
-              <input
-                type="text"
-                value={formData.o}
-                onChange={(e) => handleChange("o", e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <div className="field-hint">{fieldHints.description}</div>
-            <div className="input-section">
-              <label>Описание(T)</label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => handleChange("description", e.target.value)}
               />
             </div>
           </div>
