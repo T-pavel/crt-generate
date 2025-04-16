@@ -21,13 +21,13 @@ export default function createCertificateApplication({
   setCryptoParams,
   onError,
 }: TParams): void {
-  cadesplugin.async_spawn(function* createCert() {
+  cadesplugin?.async_spawn(function* createCert() {
     let cryptoproParams = {};
 
     try {
       const XCN_AT_KEYEXCHANGE = 1;
       const encodingTypeNum = 0x1;
-      const PKey = yield cadesplugin.CreateObjectAsync(
+      const PKey = yield cadesplugin?.CreateObjectAsync(
         "X509Enrollment.CX509PrivateKey"
       );
 
@@ -37,20 +37,20 @@ export default function createCertificateApplication({
       yield PKey.propset_ProviderType(80);
       yield PKey.propset_KeySpec(XCN_AT_KEYEXCHANGE);
 
-      const CertificateRequestPkcs10 = yield cadesplugin.CreateObjectAsync(
+      const CertificateRequestPkcs10 = yield cadesplugin?.CreateObjectAsync(
         "X509Enrollment.CX509CertificateRequestPkcs10"
       );
 
       yield CertificateRequestPkcs10.InitializeFromPrivateKey(0x1, PKey, "");
 
-      const DistinguishedName = yield cadesplugin.CreateObjectAsync(
+      const DistinguishedName = yield cadesplugin?.CreateObjectAsync(
         "X509Enrollment.CX500DistinguishedName"
       );
 
       yield DistinguishedName.Encode(distinguishedName);
       CertificateRequestPkcs10.propset_Subject(DistinguishedName);
 
-      const KeyUsageExtension = yield cadesplugin.CreateObjectAsync(
+      const KeyUsageExtension = yield cadesplugin?.CreateObjectAsync(
         "X509Enrollment.CX509ExtensionKeyUsage"
       );
 
@@ -68,41 +68,46 @@ export default function createCertificateApplication({
       );
 
       // Создаем расширение Extended Key Usage
-      const ExtendedKeyUsageExtension = yield cadesplugin.CreateObjectAsync(
+      const ExtendedKeyUsageExtension = yield cadesplugin?.CreateObjectAsync(
         "X509Enrollment.CX509ExtensionEnhancedKeyUsage"
       );
-      
-      const OIDs = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectIds");
-      const OID = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectId");
-      
+
+      const OIDs = yield cadesplugin?.CreateObjectAsync(
+        "X509Enrollment.CObjectIds"
+      );
+      const OID = yield cadesplugin?.CreateObjectAsync(
+        "X509Enrollment.CObjectId"
+      );
+
       // Инициализируем OID для Extended Key Usage
       yield OID.InitializeFromValue(extendedKeyUsage);
       yield OIDs.Add(OID);
-      
+
       yield ExtendedKeyUsageExtension.InitializeEncode(OIDs);
 
       const extensions = yield CertificateRequestPkcs10.X509Extensions;
 
-      const TemplateExtension = yield cadesplugin.CreateObjectAsync(
+      const TemplateExtension = yield cadesplugin?.CreateObjectAsync(
         "X509Enrollment.CX509ExtensionTemplate"
       );
-      const OIDTemplate = yield cadesplugin.CreateObjectAsync("X509Enrollment.CObjectId");
-      yield OIDTemplate.InitializeFromValue(template);
-      
-      yield TemplateExtension.InitializeEncode(
-        OIDTemplate,  // OID шаблона
-        1,    // Основная версия
-        0     // Дополнительная версия
+      const OIDTemplate = yield cadesplugin?.CreateObjectAsync(
+        "X509Enrollment.CObjectId"
       );
-      
+      yield OIDTemplate.InitializeFromValue(template);
+
+      yield TemplateExtension.InitializeEncode(
+        OIDTemplate, // OID шаблона
+        1, // Основная версия
+        0 // Дополнительная версия
+      );
+
       yield extensions.Add(TemplateExtension);
       yield extensions.Add(KeyUsageExtension);
       yield extensions.Add(ExtendedKeyUsageExtension);
 
-      const Enroll = yield cadesplugin.CreateObjectAsync(
+      const Enroll = yield cadesplugin?.CreateObjectAsync(
         X509ENROLLMENT_CX509ENROLLMENT
       );
-
 
       yield Enroll.InitializeFromRequest(CertificateRequestPkcs10);
 
@@ -124,7 +129,6 @@ export default function createCertificateApplication({
       };
       yield setCryptoParams(cryptoproParams as CryptoproParamsSuccess);
     } catch (error) {
-      
       cryptoproParams = {
         status: "failure",
         reason: "CRYPTO_PLUGIN_FAILURE",

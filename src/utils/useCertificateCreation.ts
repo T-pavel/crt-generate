@@ -18,21 +18,21 @@ export function useCertificateCreation() {
 
   const handleSend = (data: Data) => {
     const dnFields = [
-      { key: 'CN', value: data.commonName },
-      { key: 'G', value: data.organization },
-      { key: 'T', value: data.description },
-      { key: 'STREET', value: data.surname },
-      { key: 'OID.1.2.643.100.3', value: data.snils },
-      { key: 'OID.2.5.4.6', value: 'RU' },
-      { key: 'OID.2.5.4.8', value: data.st },
-      { key: 'O', value: data.o },
-      { key: 'OU', value: data.ou },
+      { key: "CN", value: data.commonName },
+      { key: "G", value: data.organization },
+      { key: "T", value: data.description },
+      { key: "STREET", value: data.surname },
+      { key: "OID.1.2.643.100.3", value: data.snils },
+      { key: "OID.2.5.4.6", value: "RU" },
+      { key: "OID.2.5.4.8", value: data.st },
+      { key: "O", value: data.o },
+      { key: "OU", value: data.ou },
     ];
 
     const distinguishedName = dnFields
-      .filter(field => field.value.trim() !== '')
-      .map(field => `${field.key}=${field.value}`)
-      .join(',');
+      .filter((field) => field.value.trim() !== "")
+      .map((field) => `${field.key}=${field.value}`)
+      .join(",");
 
     createCertificateApplication({
       template: data.template,
