@@ -113,13 +113,13 @@ function App() {
     ou: "",
   });
 
-  useEffect(() => {
-    getSystemInfo().then((res) => {
-      console.log("CryptoPro system info from App.tsx:", res);
-    }).catch((error) => {
-      console.error("Error getting CryptoPro system info from App.tsx:", error);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getSystemInfo().then((res) => {
+  //     console.log("CryptoPro system info from App.tsx:", res);
+  //   }).catch((error) => {
+  //     console.log("Error getting CryptoPro system info from App.tsx:", error);
+  //   });
+  // }, []);
 
   // Метод для обновления полей формы
   const handleChange = (field: keyof Data, value: string) => {
