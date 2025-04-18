@@ -10,7 +10,11 @@ export function useCertificateCreation() {
   const [error, setError] = useState<string | null>(null);
   const { cadesplugin } = window as Window &
     typeof globalThis & { cadesplugin: any };
-console.log('window')
+  console.log('CAdES plugin status:', {
+    isAvailable: !!cadesplugin,
+    pluginType: typeof cadesplugin,
+    pluginVersion: cadesplugin?.version
+  });
   const [cryptoParams, setCryptoParams] = useState<
     CryptoproParamsSuccess | CryptoproParamsFailure
   >();
@@ -47,6 +51,8 @@ console.log('window')
   useEffect(() => {
     getSystemInfo().then((res) => {
       console.log("getSystemInfo res", res);
+    }).catch((error) => {
+      console.error("Error getting CryptoPro system info:", error);
     });
   }, []);
 

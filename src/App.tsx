@@ -114,7 +114,11 @@ function App() {
   });
 
   useEffect(() => {
-    getSystemInfo();
+    getSystemInfo().then((res) => {
+      console.log("CryptoPro system info from App.tsx:", res);
+    }).catch((error) => {
+      console.error("Error getting CryptoPro system info from App.tsx:", error);
+    });
   }, []);
 
   // Метод для обновления полей формы
