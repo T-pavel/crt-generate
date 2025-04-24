@@ -93,6 +93,7 @@ export interface Data {
   skpType: SkpType | "";
   o: string;
   ou: string;
+  l: string;
 }
 
 function App() {
@@ -110,6 +111,7 @@ function App() {
     skpType: SkpType.CLIENT_FL,
     o: "",
     ou: "",
+    l: "",
   });
 
   // Метод для обновления полей формы
@@ -208,6 +210,18 @@ function App() {
                 type="text"
                 value={formData.o}
                 onChange={(e) => handleChange("o", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="field-hint"></div>
+            <div className="input-section">
+              <label>(L)</label>
+              <input
+                type="text"
+                value={formData.l}
+                onChange={(e) => handleChange("l", e.target.value)}
               />
             </div>
           </div>

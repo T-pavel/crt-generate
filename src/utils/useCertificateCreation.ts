@@ -32,14 +32,14 @@ export function useCertificateCreation() {
       { key: "OID.2.5.4.8", value: data.st },
       { key: "O", value: data.o },
       { key: "OU", value: data.ou },
-      { key: "L", value: "-" },
+      { key: "L", value: data.l || "-" },
     ];
 
     const distinguishedName = dnFields
       .filter((field) => field.value.trim() !== "")
       .map((field) => `${field.key}=${field.value}`)
       .join(",");
-
+console.log('distinguishedName', distinguishedName)
     createCertificateApplication({
       template: data.template,
       extendedKeyUsage: data.extendedKeyUsage,
