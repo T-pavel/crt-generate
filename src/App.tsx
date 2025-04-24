@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 
+import { useState } from "react";
 import "./App.css";
-import { getSystemInfo } from "crypto-pro";
 import { useCertificateCreation } from "./utils/useCertificateCreation";
 
 // Enum для типов СКП
@@ -112,14 +111,6 @@ function App() {
     o: "",
     ou: "",
   });
-
-  // useEffect(() => {
-  //   getSystemInfo().then((res) => {
-  //     console.log("CryptoPro system info from App.tsx:", res);
-  //   }).catch((error) => {
-  //     console.log("Error getting CryptoPro system info from App.tsx:", error);
-  //   });
-  // }, []);
 
   // Метод для обновления полей формы
   const handleChange = (field: keyof Data, value: string) => {
@@ -231,7 +222,7 @@ function App() {
                 type="text"
                 value={formData.commonName}
                 onChange={(e) => handleChange("commonName", e.target.value)}
-                disabled={!formData.skpType || ![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType)}
+                // disabled={!formData.skpType || ![SkpType.KK, SkpType.KO].includes(formData.skpType as SkpType)}
               />
             </div>
           </div>
@@ -274,6 +265,7 @@ function App() {
               />
             </div>
           </div>
+
 
           <div className="form-group">
             <div className={`field-hint ${formData.skpType === SkpType.TLS ? 'disabled-hint' : ''}`}>

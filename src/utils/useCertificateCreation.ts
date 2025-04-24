@@ -32,6 +32,7 @@ export function useCertificateCreation() {
       { key: "OID.2.5.4.8", value: data.st },
       { key: "O", value: data.o },
       { key: "OU", value: data.ou },
+      { key: "L", value: "-" },
     ];
 
     const distinguishedName = dnFields
