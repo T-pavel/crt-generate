@@ -38,15 +38,15 @@ const fieldHints = {
 };
 
 // Подсказки для поля surname в зависимости от типа СКП
-const surnameHints: Record<SkpType | "", string> = {
-  [SkpType.KK]: "Наименование и место нахождения юридического лица - ФП",
-  [SkpType.KO]: "Наименование и место нахождения юридического лица - ФП",
-  [SkpType.CLIENT_FL]: "Фамилия, имя и отчество (если имеется)",
-  [SkpType.CLIENT_UL]: "Наименование и место нахождения юридического лица",
-  [SkpType.CLIENT_UL_DIRECT]: "Наименование и место нахождения юридического лица",
-  [SkpType.TLS]: "Не заполняется",
-  "": "Выберите тип СКП",
-};
+// const surnameHints: Record<SkpType | "", string> = {
+//   [SkpType.KK]: "Наименование и место нахождения юридического лица - ФП",
+//   [SkpType.KO]: "Наименование и место нахождения юридического лица - ФП",
+//   [SkpType.CLIENT_FL]: "Фамилия, имя и отчество (если имеется)",
+//   [SkpType.CLIENT_UL]: "Наименование и место нахождения юридического лица",
+//   [SkpType.CLIENT_UL_DIRECT]: "Наименование и место нахождения юридического лица",
+//   [SkpType.TLS]: "Не заполняется",
+//   "": "Выберите тип СКП",
+// };
 
 // Подсказки для поля commonName в зависимости от типа СКП
 const commonNameHints: Record<SkpType | "", string> = {
@@ -85,7 +85,7 @@ export interface Data {
   commonName: string;
   snils: string;
   extendedKeyUsage: string;
-  surname: string;
+  // surname: string;
   organization: string;
   description: string;
   template: string;
@@ -103,7 +103,7 @@ function App() {
     commonName: "",
     snils: "",
     extendedKeyUsage: "1.3.6.1.4.1.10244.7.50.3.1",
-    surname: "",
+    // surname: "",
     organization: "",
     description: "",
     template: "1.3.6.1.4.1.311.21.7",
@@ -268,7 +268,7 @@ function App() {
             </div>
           </div>
 
-          <div className="form-group">
+          {/*<div className="form-group">
             <div className="field-hint">{surnameHints[formData.skpType]}</div>
             <div className="input-section">
               <label>Фамилия</label>
@@ -278,7 +278,7 @@ function App() {
                 onChange={(e) => handleChange("surname", e.target.value)}
               />
             </div>
-          </div>
+          </div>*/}
 
 
           <div className="form-group">

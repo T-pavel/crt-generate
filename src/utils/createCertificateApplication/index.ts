@@ -72,18 +72,19 @@ export default function createCertificateApplication({
         "X509Enrollment.CX509ExtensionEnhancedKeyUsage"
       );
 
-      const OIDs = yield cadesplugin?.CreateObjectAsync(
-        "X509Enrollment.CObjectIds"
-      );
-      const OID = yield cadesplugin?.CreateObjectAsync(
-        "X509Enrollment.CObjectId"
-      );
-
       // Инициализируем OID для Extended Key Usage
-      yield OID.InitializeFromValue(extendedKeyUsage);
-      yield OIDs.Add(OID);
+      if (extendedKeyUsage) {
+        const OIDs = yield cadesplugin?.CreateObjectAsync(
+          "X509Enrollment.CObjectIds"
+        );
+        const OID = yield cadesplugin?.CreateObjectAsync(
+          "X509Enrollment.CObjectId"
+        );
+        yield OID.InitializeFromValue(extendedKeyUsage);
+        yield OIDs.Add(OID);
+        yield ExtendedKeyUsageExtension.InitializeEncode(OIDs);
 
-      yield ExtendedKeyUsageExtension.InitializeEncode(OIDs);
+      }
 
       const extensions = yield CertificateRequestPkcs10.X509Extensions;
 

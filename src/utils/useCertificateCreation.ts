@@ -26,7 +26,7 @@ export function useCertificateCreation() {
       { key: "CN", value: data.commonName },
       { key: "G", value: data.organization },
       { key: "T", value: data.description },
-      { key: "STREET", value: data.surname },
+      // { key: "STREET", value: data.surname },
       { key: "OID.1.2.643.100.3", value: data.snils },
       { key: "OID.2.5.4.6", value: "RU" },
       { key: "OID.2.5.4.8", value: data.st },
@@ -39,7 +39,6 @@ export function useCertificateCreation() {
       .filter((field) => field.value.trim() !== "")
       .map((field) => `${field.key}=${field.value}`)
       .join(",");
-console.log('distinguishedName', distinguishedName)
     createCertificateApplication({
       template: data.template,
       extendedKeyUsage: data.extendedKeyUsage,
