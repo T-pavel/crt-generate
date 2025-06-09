@@ -57,14 +57,13 @@ export default function createCertificateApplication({
       const CERT_DATA_ENCIPHERMENT_KEY_USAGE = 0x10;
       const CERT_KEY_ENCIPHERMENT_KEY_USAGE = 0x20;
       const CERT_DIGITAL_SIGNATURE_KEY_USAGE = 0x80;
-      const CERT_NON_REPUDIATION_KEY_USAGE = 0x40;
+      // const CERT_NON_REPUDIATION_KEY_USAGE = 0x40;
 
       yield KeyUsageExtension.InitializeEncode(
         // eslint-disable-next-line no-bitwise
         CERT_KEY_ENCIPHERMENT_KEY_USAGE |
           CERT_DATA_ENCIPHERMENT_KEY_USAGE |
-          CERT_DIGITAL_SIGNATURE_KEY_USAGE |
-          CERT_NON_REPUDIATION_KEY_USAGE
+          CERT_DIGITAL_SIGNATURE_KEY_USAGE
       );
 
       // Создаем расширение Extended Key Usage
@@ -83,7 +82,6 @@ export default function createCertificateApplication({
         yield OID.InitializeFromValue(extendedKeyUsage);
         yield OIDs.Add(OID);
         yield ExtendedKeyUsageExtension.InitializeEncode(OIDs);
-
       }
 
       const extensions = yield CertificateRequestPkcs10.X509Extensions;
